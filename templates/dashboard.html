@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Nut CMS{% endblock title %}
+
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-2 mt-3">
+            <div class="col-2 mt-5 fixed-top">
+            {% include 'common/blog_card.html' %}
+            {% include 'common/cate_tag_card.html' %}
+            </div>
+        </div>
+
+        <div class="col-10 mt-3"><!--  -->
+            <div class="card small">
+                <div class="card-body"> <!-- article -->
+                    <h5 class="card-title">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Articles List
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm article_add small" role="button" aria-pressed="true">Add New</a>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                    <!-- <i class="fas fa-user-edit"></i>&nbsp;{{ user_obj.first_name }}&nbsp;&nbsp;&nbsp;&nbsp; -->
+                    </h6>
+
+                    <p class="card-text">{{articles.content}}</p>
+                    <ul class="list-group list-group-flush">
+                        {% for i in articles %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="far fa-sticky-note"></i>
+                                {{i.title}}&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span class="text-muted">
+                                    {{i.content|slice:'30'}} ...
+                                </span>
+                            </div>
+                            <a href=article/{{i.id}}>
+                                <i class="fas fa-pen-square"></i>
+                                Edit
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    
+                </div> <!-- article -->
+            </div>
+        </div><!-- end  -->
+
+    </div><!-- row -->
+    {% include 'common/footer.html' %}
+</div>
+{% endblock content %}
+
+{% block footer %}{% endblock footer %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    $(function () {
+
+    })
+</script>
+{% endblock js %}

@@ -1,0 +1,26 @@
+
+            <ul class="list-group list-group-flush">
+
+                {% for i in articles reversed %}
+                <li class="list-group-item">
+                    <a href=/article/{{i.id}} class="media small" style="text-decoration: none; color: #333">
+                      <img class="mr-3" src=/{{i.user.avatar}} alt="Generic placeholder image" style="width: 60px;">
+                      <div class="media-body">
+                        <h6 class="mt-0">{{i.title}}</h6>
+                        {{ i.content|slice:'146' }}...
+                      </div>
+                    </a>
+                    <small class="text-muted">
+                        posted in <a href=/{{i.user.username}}/ class="text-primary">{{i.user.first_name}}</a> on {{ i.date }}
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="" style="text-decoration: none;">
+                            <i class="far fa-comment"></i>&nbsp;{{i.comment_count}}&nbsp;&nbsp;
+                        </a>
+                        <a href="" style="text-decoration: none;">
+                            <i class="far fa-thumbs-up"></i>&nbsp;{{i.up_count}}
+                        </a>
+                    </small>
+                </li>
+                {% endfor %}
+
+            </ul>

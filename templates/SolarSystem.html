@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>universe</title>
+	<style>
+a,body{
+	background: rgba(98,98,255,0.5);
+    background: linear-gradient(rgba(0,20,39,1) 0%, rgba(0,59,116,1) 120%);
+	font-family: 'Microsoft YaHei';
+	text-align: center;
+	font-size: 10px;
+	color: rgba(255,255,255,0.6);
+	white-space:nowrap; /*强迫不换行*/
+	text-decoration: none;
+}
+.universe{
+	position: relative;
+	width: 100px;
+	height: 100px;
+	margin: 40% auto;
+	background: rgba(255,255,255,0);
+	transform: rotateX(0deg);
+}
+.track{
+	position: absolute;
+	border: solid 1px rgba(255,255,255,0.09);
+	border-radius: 50%;
+	box-sizing: border-box; /*在定义的宽高里面。这就意味着一个带有2px边框的200px的div仍然宽度是200px!*/
+}
+.Earth{
+	width: 100%;
+	height: 100%;
+	background: rgba(255,255,255,0.5);
+}
+.planet{
+	position: absolute;
+	border-radius: 50%;
+	box-sizing: border-box; /*在定义的宽高里面。这就意味着一个带有2px边框的200px的div仍然宽度是200px!*/
+	text-align: center;
+}
+.Name{
+	position: absolute;
+	width: 100%;
+	top: -30px;
+	display: block;
+}
+.planet>a {
+	position: relative;
+	top: -30px;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+}
+span.satellite{
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+@keyframes track{
+	100%{
+		transform: rotateZ(360deg);
+	}
+}
+@keyframes retrack{
+	100%{
+		transform: rotateZ(-360deg);
+	}
+}
+.track-Sun{
+	width: 100px;
+	height: 100px;
+	top: -0%;
+	left: -0%;
+	animation: track 10s infinite linear;
+	border: hidden;
+}
+.planet-Sun{
+	width: 20px;
+	height: 20px;
+	top: 50%;
+	left: 50%;
+	margin: -10px auto auto -10px;
+	background: radial-gradient(circle at 2px 2px, rgba(255,204,51,1), rgba(242,149,23,1));/*球形渐变*/
+	box-shadow: 0 0 20px rgba(242,149,23,1);
+	animation: retrack 10s infinite linear;
+}
+.track-Mercury{
+	width: 140px;
+	height: 140px;
+	top:-20%;
+	left: -20%;
+	animation: track 2.4027397s infinite linear;
+}
+.planet-Mercury{
+	width: 4.88px;
+	height: 4.88px;
+	top: -2.44px;
+	background: rgba(242,149,23,1);
+	animation: retrack 2.4027397s infinite linear;
+}
+.track-Venus{
+	width: 180px;
+	height: 180px;
+	top:-40%;
+	left: -40%;
+	animation: track 6.1561644s infinite linear;
+}
+.planet-Venus{
+	width: 12.103px;
+	height: 12.103px;
+	top: -6.0515px;
+	background: rgba(242,149,23,1);
+	animation: retrack 6.1561644s infinite linear;
+}
+.track-Earth{
+	width: 220px;
+	height: 220px;
+	top: -60%;
+	left: -60%;
+	animation: track 10s infinite linear;
+}
+.planet-Earth{
+	width: 12.756px;
+	height: 12.756px;
+	top: -6.378px;
+	background: rgba(98,98,255,1);
+	animation: retrack 10s infinite linear;
+}
+.track-Moon{
+	width: 40px;
+	height: 40px;
+}
+.planet-Moon{
+	width: 3px;
+	height: 3px;
+	top: -8px;
+	background: rgba(242,149,23,1);
+}
+.satellite-Moon{
+	position: relative;
+	animation: track 1s infinite linear;
+}
+.track-Mars{
+	width: 260px;
+	height: 260px;
+	top:-80%;
+	left: -80%;
+	animation: track 18.8219178s infinite linear;
+}
+.planet-Mars{
+	width: 6.794px;
+	height: 6.794px;
+	top: -3.397px;
+	background: rgba(217,37,42,0.8);
+	animation: retrack 18.8219178s infinite linear;
+}
+.track-Jupiter{
+	width: 400px;
+	height: 400px;
+	top:-150%;
+	left: -150%;
+	animation: track 118.6s infinite linear;
+}
+.planet-Jupiter{
+	width: 142.984px;
+	height: 142.984px;
+	top: -71.492px;
+	background: radial-gradient(circle at 20px 20px, rgba(255,199,199,1), rgba(255,199,199,0));/*球形渐变*/
+	animation: retrack 118.6s infinite linear;
+	box-shadow: inset 10px -5px 0 0 rgba(80,80,80,0.2);
+}
+.planet-Jupiter .crater1{
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: rgba(80,80,80,0.2);
+	box-shadow: inset -4px 2px 0 0 rgba(80,80,80,0.3);
+	top: 30px;
+	right: 30px;
+}
+.planet-Jupiter .crater2{
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background: rgba(80,80,80,0.2);
+	box-shadow: inset -2px 1px 0 0 rgba(80,80,80,0.3);
+	top: 40px;
+	right: 80px;
+}
+.planet-Jupiter .crater3{
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: rgba(80,80,80,0.2);
+	box-shadow: inset -2px 1px 0 0 rgba(80,80,80,0.3);
+	top: 80px;
+	right: 40px;
+}
+.track-Saturn{
+	width: 700px;
+	height: 700px;
+	top:-300%;
+	left: -300%;
+	animation: track 295s infinite linear;
+}
+.planet-Saturn{
+	width: 120.536px;
+	height: 120.536px;
+	top: -60.268px;
+	background: radial-gradient(circle at 2px 2px, rgba(255,204,51,1), rgba(255,204,51,0.4));/*球形渐变*/
+	animation: retrack 295s infinite linear;
+	box-shadow: inset 10px -5px 0 0 rgba(80,80,80,0.2);
+}
+.planet-Saturn .crater1{
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: rgba(80,80,80,0.2);
+	box-shadow: inset -2px 1px 0 0 rgba(80,80,80,0.3);
+	top: 20px;
+	right: 30px;
+}
+.planet-Saturn .crater2{
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	background: rgba(80,80,80,0.2);
+	box-shadow: inset -2px 1px 0 0 rgba(80,80,80,0.3);
+	top: 30px;
+	right: 70px;
+}
+.planet-Saturn .crater3{
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: rgba(80,80,80,0.2);
+	box-shadow: inset -2px 1px 0 0 rgba(80,80,80,0.3);
+	top: 60px;
+	right: 30px;
+}
+.track-Uranus{
+	width: 1000px;
+	height: 1000px;
+	top:-450%;
+	left: -450%;
+	animation: track 840s infinite linear;
+}
+.planet-Uranus{
+	width: 51.118px;
+	height: 51.118px;
+	top: -25.569px;
+	background: radial-gradient(circle at 2px 2px, rgba(98,98,255,1), rgba(98,98,255,0.4));/*球形渐变*/
+	animation: retrack 840s infinite linear;
+}
+.track-Neptune{
+	width: 1300px;
+	height: 1300px;
+	top:-600%;
+	left: -600%;
+	animation: track 1648s infinite linear;
+}
+.planet-Neptune{
+	width: 49.532px;
+	height: 49.532px;
+	top: -24.766px;
+	background: radial-gradient(circle at 20px 20px, rgba(23,47,91,1), rgba(23,47,91,0));/*球形渐变*/
+	animation: retrack 1648s infinite linear;
+}
+.track-Pluto{
+	width: 1600px;
+	height: 1600px;
+	top:-750%;
+	left: -750%;
+	animation: track 2480s infinite linear;
+}
+.planet-Pluto{
+	width: 2.274px;
+	height: 2.274px;
+	top: -1.137px;
+	background: rgba(186,186,69,0.8);
+	animation: retrack 2480s infinite linear;
+}
+/*流星------------------*/
+.star{
+	position: absolute;
+	width: 4px;
+	height: 4px;
+	background: rgba(255,255,255,0.8);
+	top: -200px;
+	border-radius: 50%;
+	animation: star 5s infinite linear;
+	opacity: 0;
+}
+.star:after{
+	content: '';
+	position: absolute;
+	left: 4px;
+	border: solid 1px;
+	border-width: 1px 400px 1px 400px;
+	border-color: transparent transparent transparent rgba(255,255,255,1);
+	transform: rotateZ(-45deg);
+	transform-origin: 0% 150%;
+}
+.star1{
+	animation-delay:1s;
+	animation-duration: 3s;
+	left: 200px;
+	top: -100;
+}
+.star2{
+	animation-delay:8s;
+	animation-duration: 4s;
+	left: 400px;
+	top: -200;
+}
+.star3{
+	animation-delay:6s;
+	animation-duration: 9s;
+	left: 500px;
+	top: -300;
+}
+.star4{
+	animation-delay:84s;
+	animation-duration: 5s;
+	left: 600px;
+	top: -400;
+}
+.star5{
+	animation-delay:7s;
+	animation-duration: 8s;
+	left: -200px;
+	top: -100;
+}
+.star6{
+	animation-delay:5s;
+	animation-duration: 7s;
+	left: -400px;
+	top: -600;
+}
+@keyframes star{
+	0%{
+		transform: translate3d(0,0,0);
+		opacity: 0;
+	}
+	10%{
+		transform: translate3d(-200px,200px,0);
+		transform: scale3d(1.5,1.5.0);
+		opacity: 0.1;
+	}
+	15%{
+		transform: translate3d(-400px,400px,0);
+		opacity: 0;
+	}
+	100%{
+		opacity: 0;
+	}
+}
+	</style>
+</head>
+<body>
+	<div class="universe">
+		<span class="star"></span>
+		<span class="star star1"></span>
+		<span class="star star2"></span>
+		<span class="star star3"></span>
+		<span class="star star4"></span>
+		<span class="star star5"></span>
+		<span class="star star6"></span>
+		<div class="track track-Sun">
+			<div class="wrap">
+				<a href="#" class="planet planet-Sun">
+					<span class="Name">太阳 Sun</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Mercury">
+			<div class="wrap">
+				<a href="#" class="planet planet-Mercury">
+					<span class="Name">水星 Mercury</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Venus">
+			<div class="wrap">
+				<a href="#" class="planet planet-Venus">
+					<span class="Name">金星 Venus</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Earth">
+			<div class="wrap">
+				<a href="#" class="planet planet-Earth">
+					<span class="Name">地球 Earth</span>
+					<span class="satellite satellite-Moon">
+						<span class="planet planet-Moon"></span>
+					</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Mars">
+			<div class="wrap">
+				<a href="#" class="planet planet-Mars">
+					<span class="Name">火星 Mars</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Jupiter">
+			<div class="wrap">
+				<a href="#" class="planet planet-Jupiter">
+					<span class="Name">木星 Jupiter</span>
+					<span class='crater1'></span>
+  					<span class='crater2'></span>
+  					<span class='crater3'></span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Saturn">
+			<div class="wrap">
+				<a href="#" class="planet planet-Saturn">
+					<span class="Name">土星 Saturn</span>
+					<span class='crater1'></span>
+  					<span class='crater2'></span>
+  					<span class='crater3'></span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Uranus">
+			<div class="wrap">
+				<a href="#" class="planet planet-Uranus">
+					<span class="Name">天王星 Uranus</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Neptune">
+			<div class="wrap">
+				<a href="#" class="planet planet-Neptune">
+					<span class="Name">海王星 Neptune</span>
+				</a>
+			</div>
+		</div>
+		<div class="track track-Pluto">
+			<div class="wrap">
+				<a href="#" class="planet planet-Pluto">
+					<span class="Name">冥王星 Pluto</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

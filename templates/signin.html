@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block style %}
+    {{ block.super }}
+{% endblock style %}
+
+
+{% block swiper %}
+{% endblock swiper %}
+
+{% block content %}
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col">
+        </div>
+        <div id="signin_form" class="col-6 mt-5">
+          {% for i in form_obj %}
+            <div class="form-group row">
+              <label class="col-3 col-form-label form-control-sm text-right">
+                {{i.label}}
+              </label>
+              <div class="col-9">
+                {{i}}
+                <small class="form-text text-danger"></small>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="form-group row text-center">
+            <div class="col"></div>
+            <div class="col-sm-9">
+              <a id="signin" href="javascript:void(0);" class="btn btn-primary btn-block">Sign In</a>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+        </div>
+      </div>
+    </div>
+{% endblock content %}
+{% block footer%}
+{% endblock footer %}
+
+{% block foot%}
+    {{ block.super }}
+<script type="text/javascript">
+  $(function () {
+    $('#signin').click(function () {
+      // var ret = $($('input[name="username"]')[0]).val();
+      // var ret = $('[name="username"]').val();
+      // console.log(ret);
+      var signin_info = {
+        'username': $('[name="username"]').val(),
+        'password': $('[name="password"]').val(),
+        're_password': $('[name="re_password"]').val(),
+        'first_name': $('[name="first_name"]').val(),
+        'last_name': $('[name="last_name"]').val(),
+        'email': $('[name="email"]').val(),
+      };
+      // console.log('signin_info',signin_info);
+      $.ajax({
+        url:'/signin/',
+        type:'POST',
+        contentType:"application/json; charset=utf-8",
+        dataType:'json',
+        data: JSON.stringify(signin_info),
+        success:function (data) {
+          data = JSON.parse(JSON.stringify(data));
+          console.log('data',data);
+          console.log('cleaned_data',data['cleaned_data']);
+          console.log('errors',data['errors']);
+
+          if (data['state']) {
+            window.location.href=data['url']
+          }
+          else{
+            // 拿到每个input标签
+            var ret = $('#signin_form input');
+            // console.log(ret,typeof(ret))
+
+            for (var i = 0; i < ret.length; i++) {
+              // 如果此input已填写有value 下次循环是重载vaule
+              if ($(ret[i]).attr('name') in data['cleaned_data']) {
+                $(ret[i]).val(data['cleaned_data'][$(ret[i]).attr('name')])
+              }
+
+              $($(ret[i]).siblings('small')[0]).html('')  // 每次循环显示验证信息前 清空上次验证信息
+
+              // 如果此input有错误信息 写入错误信息
+              if ($(ret[i]).attr('name') in data['errors']) {
+                // console.log($(ret[i]).attr('name'))
+                $($(ret[i]).siblings('small')[0]).html(data['errors'][$(ret[i]).attr('name')])
+              }
+            }
+          }
+        }
+      })
+    })
+  })
+</script>
+{% endblock foot %}

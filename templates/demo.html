@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load my_filter_tag %}
+
+{% block title %}
+<title>Demo Title</title>
+{% endblock title %}
+
+{% block style %}
+{{ block.super }}
+<style type="text/css">
+	.list-group-item{
+	    padding: .25rem 1.25rem;
+	}
+</style>
+{% endblock style %}
+
+{% block swiper %}
+{{ block.super }} <!-- 即继承又可加入新内容 -->
+{% endblock swiper %}
+
+
+{% block narbar %}
+{% endblock narbar %}
+
+
+{% block content %}
+<div class="container mb-5">
+	
+	<ul class="list-group">
+		<li class="list-group-item active">变量深度查询</li>
+		<li class="list-group-item">{{l.0}}</li>
+	</ul>
+	<ul class="list-group mt-1">
+		<li class="list-group-item active">过滤器</li>
+		<li class="list-group-item bg-light">{{r|default:'nnu333'}}</li>
+		<li class="list-group-item bg-light">{{l|filesizeformat}}</li>
+		<li class="list-group-item bg-light">{{num|filesizeformat}}</li>
+	</ul>
+	<ul class="list-group mt-1">
+		<li class="list-group-item active">标签</li>
+		<li class="list-group-item">
+			{% for i in l %}
+			<span class="text-danger">{{i}}</span>
+			{% endfor %}
+		</li>
+	</ul>
+	<ul class="list-group mt-1">
+		<li class="list-group-item active">自定义过滤器</li>
+		<li class="list-group-item">{{ num | filter_multi:2 }}</li>
+	</ul>
+	<ul class="list-group mt-1">
+		<li class="list-group-item active">自定义标签</li>
+		<li class="list-group-item">{% tag_multi num 2 %}</li>
+	</ul>
+
+</div>
+{% endblock content %}
+
+
+{% block footer %}
+{% endblock footer %}

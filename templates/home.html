@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Nut CMS{% endblock title %}
+
+
+{% block content %}
+
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-3 mt-3">
+            <div class="card mb-3">
+                <img class="card-img-top" src="https://img3.doubanio.com/f/talion/fbcb08987a36258354c6037211d94286bef9716c/pics/card/promotion_bg.jpg" alt="Card image cap">
+                <div class="card-body">
+                <h5 class="card-title">{{ blog_obj.title }}</h5>
+                <p class="card-text">
+                    {{ blog_obj.theme }}
+                </p>
+                <p class="card-text">
+                    <small class="text-muted">Author: {{ user_obj.username }} </small>
+                    <small class="text-muted">Email: {{ user_obj.email }} </small>
+                </p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Categorys</h6>
+                </div>
+                <ul class="list-group list-group-flush small">
+                    {% for i in cate_user %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="">{{ i.name }}</a>
+                        <span class="badge badge-secondary badge-pil">{{i.count}}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="card-body">
+                    <h6 class="card-title">Tags</h6>
+                    {% for i in tag_user %}
+                    <a href="#" class="badge badge-success">
+                        {{i.name}}
+                        <span class="badge badge-light">{{i.count}}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-9 mt-3">
+            <ul class="list-group list-group-flush">
+
+                {% for i in article_user %}
+                <li class="list-group-item">
+                    <a href="#" class="media small" style="text-decoration: none; color: #333">
+                      <img class="mr-3" src="/static/img/nut.jpg" alt="Generic placeholder image" style="width: 60px;">
+                      <div class="media-body">
+                        <h6 class="mt-0">{{i.title}}</h6>
+                        {{ i.content|slice:'146' }}...
+                      </div>
+                    </a>
+                    <small class="text-muted">
+                        posted in <span class="text-primary">{{ user_obj.username }}</span> on {{ i.date }}
+                        &nbsp;&nbsp;&nbsp;
+                        <i class="far fa-comment"></i>&nbsp;2&nbsp;&nbsp;
+                        <i class="far fa-thumbs-up"></i>&nbsp;6
+                    </small>
+                </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block js %}
+    {{ block.super }}
+{% endblock js %}

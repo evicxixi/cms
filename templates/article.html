@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% block title %}Nut CMS{% endblock title %}
+
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-2 mt-3">
+            <div class="col-2 mt-5 fixed-top">
+            {% include 'common/blog_card.html' %}
+            {% include 'common/cate_tag_card.html' %}
+            </div>
+        </div>
+
+        <!-- article -->
+        <div class="col-10 mt-3">
+            <div class="card small">
+
+                <div class="card-body"> <!-- article -->
+                    <h5 class="card-title">{{article_obj.title}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="fas fa-user-edit"></i>
+                        <a href="" style="text-decoration: none;">
+                            {{ user_obj.first_name }}
+                        </a>&nbsp;&nbsp;
+
+                        <i class="fas fa-hashtag"></i>
+                        <a href="" style="text-decoration: none;">{{article_obj.category}}
+                        </a>&nbsp;&nbsp;
+
+                        <i class="fas fa-tags"></i>
+                        {% for i in tag_list %}
+                        <a href="" style="text-decoration: none;">
+                        {{ i.tag }}
+                        </a>,
+                        {% endfor %}
+                    </h6>
+
+                    <p class="card-text">{{article_obj.content}}</p>
+
+                    <span class="text-muted">
+                        posted in <a href=/{{i.user.username}}/ class="text-primary">{{article_obj.user.first_name}}</a> on {{ article_obj.date }}
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="javascript:void(0);" style="text-decoration: none;">
+                            <i class="far fa-comment"></i>&nbsp;{{article_obj.comment_count}}
+                        </a>&nbsp;&nbsp;
+                        <a href="javascript:void(0);" class="card-link reply">Add Comment</a>&nbsp;&nbsp;
+                    </span>
+
+                    <!-- up down--------------- -->
+
+                    <span id="article_up_down" class="text-muted float-right">
+                        <a href="javascript:void(0);" id="up" style="text-decoration: none;">
+                            <i class="fas fa-caret-square-up"></i>&nbsp;{{article_obj.up_count}}
+                        </a>&nbsp;&nbsp;
+                        <a href="javascript:void(0);" id="down" style="text-decoration: none;">
+                            <i class="fas fa-caret-square-down"></i>&nbsp;{{article_obj.down_count}}
+                        </a>&nbsp;&nbsp;
+                    </span> <!-- up down -->
+                </div> <!-- article -->
+
+                <div id="comment_input" class="form-group col-lg-6 col-md-9 col-sm-12"> <!-- comment input -->
+                    <textarea class="form-control" rows="2" placeholder='write some thing...'></textarea>
+                    <a href="javascript:void(0);" class="btn-sm btn-success float-right" comment_id="">submit</a>
+                </div> <!-- comment input -->
+
+                <ul class="list-group list-group-flush small"> <!-- comment list -->
+                  <li class="list-group-item">
+                    <ul id="comment_list" class="list-group list-group-flush">
+                        {% for i in comments reversed%}
+                        {% if not i.pid_id %}
+                        <li class="list-group-item">
+                            <span>{{i.content}}</span><br>
+                            <span class="text-muted"># {{forloop.revcounter}}楼 | </span>
+                            <span class="text-muted"> {{i.data}} on</span>
+                            <span class="text-dark">{{i.user.first_name}}</span>&nbsp;&nbsp;
+                            <a href="javascript:void(0);" class="text-primary reply" comment_id={{i.id}}>
+                                <i class="fa fa-reply"></i>&nbsp;Reply
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                  </li>
+                </ul> <!-- comment list -->
+            </div>
+        </div><!-- end article -->
+    </div><!-- row -->
+    {% include 'common/footer.html' %}
+</div>
+{% endblock content %}
+
+{% block footer %}{% endblock footer %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    $(function () {
+        // 判断是否已经点过赞 决定是否禁用#article_up_down a
+        if ( {{updown_state}} == 1 ) {
+            $('#article_up_down a').css('cursor','not-allowed').removeAttr('href');
+        }
+
+        // 点击事件 执行up_down
+        $('#article_up_down>a').click(function () {
+            // console.log($(this).attr('id'))
+            var _this = $(this);
+
+            // 判断点击了up还是down 从而改写状态
+            var is_up;
+            if ($(this).attr('id')=='up') {
+                var is_up = true;
+            }
+            else if ($(this).attr('id')=='down') {
+                var is_up = false;
+            }
+
+            // 构建发送给server的数据
+            var data = {
+                    article_id: '{{article_obj.pk}}',
+                    is_up: is_up,
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                }
+            $.ajax({
+                url:'/article_up_down/',
+                type:'POST',
+                contentType:"application/json; charset=utf-8",
+                dataType:'json',
+                data: JSON.stringify(data),
+                // data:data,
+                success:function (data) {
+                    // console.log('data',data)
+                    data = JSON.parse(JSON.stringify(data))
+                    console.log('data',data)
+                    var text;
+
+                    // 如果从未点击过up_down
+                    if (data['state']=='0') {
+                        if (_this.attr('id')=='up') {text = '赞了';}
+                        else{text = '踩了';}
+                    }
+                    // 如果已经点击过up_down
+                    else if (data['state']=='1') {text = '您已赞过';}
+                    else if (data['state']=='-1') {text = '您已踩过';}
+                    $('#article_up_down a').css('cursor','not-allowed').removeAttr('href').attr({'title':text,}); // 禁用鼠标并添加提示文字
+
+                    $('#up_notice').remove(); // however删除掉之前可能添加的#up_notice
+                    _this.parent().prepend('<span id="up_notice" class="text-danger">'+text+'</span>') //根据返回状态添加#up_notice
+                    $('#up_notice').delay(3000).hide('fast');
+
+                }
+            })
+        })
+
+        // 非根评论渲染 (未完成)
+        // console.log(comment_list)
+        // for (var i = 0; i < comment_list.length; i++) {
+
+        //     alert(123)
+        //     console.log(comment_list[i])
+        //     alert(123)
+        // }
+
+
+        // comment_input 动态迁移
+        $('#comment_list').on('click','.reply',function () {
+            if ($(this).siblings('#comment_input').length) { //如果comment_input已迁移过来
+                console.log('yes')
+                $('#comment_input').toggle('fast')
+            }
+            else{
+                $('#comment_input').hide('fast');
+                $(this).after($('#comment_input')); //转移comment_input
+                var pid = $('#comment_input').siblings('.reply').attr('comment_id');
+                $('#comment_input a').attr('comment_id',pid) //为submit按钮设置属性comment_id
+                $('#comment_input textarea').val(''); //每次转移comment_input清空val
+                $('#comment_input').hide().show('fast'); //不论转移来的comment_input是否为show状态 均重设为show
+            }
+        })
+
+        // 提交评论
+        $('#comment_input a').click(function () {
+            var data = {
+                article_id: '{{article_obj.pk}}',
+                pid_id: $('#comment_input a').attr('comment_id'),
+                content: $(this).siblings('textarea').val(),
+                csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+            }
+            // console.log($('#comment_input a').attr('comment_id'))
+
+            var conment = ` 
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" style="border-left:1px solid #999;">
+                                <span>${data['content']}</span><br>
+                                <span class="text-muted"> ${data['pid_id']} 楼 | </span>
+                                <span class="text-muted"> ${ data['date'] } on</span>
+                                <span class="text-dark">${data['user']}</span>&nbsp;&nbsp;
+                                <a href="javascript:void(0);" class="text-primary reply" comment_id=${data['comment_id']}>
+                                    <i class="fa fa-reply"></i>&nbsp;Reply
+                                </a>
+                            </li>
+                        </ul>
+                        ` 
+            var conment_root = ` 
+                        <li class="list-group-item">
+                            <span>${data['content']}</span><br>
+                            <span class="text-muted"># ${data['pid_id']} 楼 | </span>
+                            <span class="text-muted"> ${data['date']} on</span>
+                            <span class="text-dark">${data['user']}</span>&nbsp;&nbsp;
+                            <a href="javascript:void(0);" class="text-primary reply" comment_id=${data['comment_id']}>
+                                <i class="fa fa-reply"></i>&nbsp;Reply
+                            </a>
+                        </li>
+                        ` 
+            $.ajax({
+                url:'/comment/',
+                type:'POST',
+                contentType:"application/json; charset=utf-8",
+                dataType:'json',
+                data: JSON.stringify(data),
+                // data:data,
+                success:function (data) {
+                    // console.log('data',data)
+                    data = JSON.parse(JSON.stringify(data))
+                    console.log('data',data)
+                    if (data['pid_id']) { // 如果提交非根评论
+                        console.log('if')
+                        $('#comment_input').hide()
+                        $('.reply[comment_id='+data['pid_id']+']').after(conment)                    }
+                    else { // 如果提交根评论
+                        console.log('else')
+                        $('#comment_list').prepend(conment_root)
+                    }
+                }
+            })
+        })
+    })
+</script>
+{% endblock js %}

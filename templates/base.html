@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% block head %}
+<head>
+    <title>{% block title %} base title {% endblock title%}</title>
+	{% block link %}
+        {% include "common/common_head.html" %}
+	{% endblock link %}
+    <style type="text/css">
+        .card{
+            /*border-top: thick solid #FF7D00;*/
+            /*background-color: red;*/
+        }
+        body{
+            background-color: #ddd;
+        }
+    </style>
+</head>
+{% endblock head %}
+
+
+<body>
+
+{% include 'nav.html'  %}
+
+
+{% block content %}
+    {% block stars %}
+    <canvas id="canvas" width="1584" height="379"></canvas>
+    <span class="text" id="txtInfinity" style="top: 180px; left: 743px;"></span>
+    {% endblock stars %}
+{% endblock content %}
+
+{% block menu_fixed %}
+<div id="menu_fixed" class="btn-group-vertical position-fixed" style="right: 10px; bottom: 10px; z-index: 99;">
+	  <button type="button" class="btn btn-sm btn-outline-primary">
+	  	<i class="fa fa-bars" aria-hidden="true"></i>
+	  </button>
+	  <button type="button" class="btn btn-sm btn-outline-info">
+	  	<i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+	  </button>
+</div>
+{% endblock menu_fixed %}
+
+
+{% block footer %}
+<div class="footer col-12 bg-success text-center text-white">
+	<div class="row">
+		<div class="col-4 mt-2 mb-5 text-left">
+			<span class="text-warning font-italic">Powered by</span>
+			<img src={{django}} alt="..." class="rounded" style="width: 100px;">
+		</div>
+		<div class="col-4 mt-2 mb-5">
+			<div class="bd-brand-logos">
+			  <div class="bd-brand-item">
+			    <span class="h3">Bootstrap</span>
+			    <strong class="text-warning">Right</strong>
+			  </div>
+			</div>
+			<ul class="list-unstyled text-left">
+			  <li>Lorem ipsum dolor sit amet <a href="" class="alert-link text-warning">Bootstrap</a></li>
+			  <li class="small">Consectetur adipiscing elit</li>
+			  <li>Integer molestie lorem at massa</li>
+			  <li class="small">Eget porttitor lorem</li>
+			</ul>
+		</div>
+		<div class="col-4 mt-2 mb-5 text-right">
+			<span>Copyright © Nut</span>
+			<img src={{icon_svg}} alt="..." class="rounded" style="width: 100px;">
+			
+			<p class="small">2012 - 2018    All rights reserved.</p>
+		</div>
+	</div>
+</div>
+{% endblock footer %}
+
+
+{% block js %}
+    {% include "common/common_js.html" %}
+{% endblock js %}
+</body>
+</html>
