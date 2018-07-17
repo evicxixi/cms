@@ -36,7 +36,7 @@
                         {% endfor %}
                     </h6>
 
-                    <p class="card-text">{{article_obj.content}}</p>
+                    <p class="card-text">{{article_obj.content|safe}}</p>
 
                     <span class="text-muted">
                         posted in <a href=/{{i.user.username}}/ class="text-primary">{{article_obj.user.first_name}}</a> on {{ article_obj.date }}

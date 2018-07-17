@@ -7,49 +7,114 @@ from django.contrib.auth.models import User
 from cms.models import UserInfo, Blog, Article, Comment, Category, Tag, Article2Tag, ArticleUpDown
 from django.db.models import Avg, Max, Min, Count
 from django.http import JsonResponse
+from bs4 import BeautifulSoup
+import datetime
 # Create your views here.
+
+
+def upload(request):
+    if request.method == 'GET':  #
+        print('get')
+    elif request.method == 'POST':  #
+        print('post')
 
 
 def dashboard(request, **kwargs):
     print('dashboard')
     if kwargs:
         article_id = kwargs['article']
-        print('id', id)
-        if request.method == 'GET':  # 初次请求 /article/id/
-            print('get')
-            article_obj = Article.objects.filter(id=article_id).first()
-            user_obj = UserInfo.objects.filter(id=request.user.id).first()
-            cates = Category.objects.all()
-            tags = Tag.objects.all()
-            tag_list = Article2Tag.objects.filter(
-                article_id=article_obj.id).values('tag')
-            tag_list = [i['tag'] for i in tag_list]
-            # if tag:
-            #     tag = Tag.objects.filter(id=tag.tag_id).first()
+        print('article_id', article_id, type(article_id))
+        if article_id == '0':
+            if request.method == 'GET':  # 初次请求 /article/id/
+                print('get')
+                # article_obj = Article.objects.filter(id=article_id).first()
+                user_obj = UserInfo.objects.filter(id=request.user.id).first()
+                cates = Category.objects.all()
+                tags = Tag.objects.all()
+                # tag_list = Article2Tag.objects.filter(
+                #     article_id=article_obj.id).values('tag')
+                # tag_list = [i['tag'] for i in tag_list]
+                # if tag:
+                #     tag = Tag.objects.filter(id=tag.tag_id).first()
 
-            print('tag_list', tag_list)
-            print('cates', cates)
-            print('article_obj.tag', article_obj.tag.name)
-            return render(request, 'article_edit.html', locals())
-        elif request.method == 'POST':
-            print('post1')
-            if request.is_ajax():
-                data = json.loads(request.body.decode('utf-8'))
-                # print('data', data)
-                article_obj = Article.objects.filter(id=article_id)
-                # .update(
-                # title=data['title'], content=data['content'],
-                # cate=data['cate'],)
-                article2tag_obj_list = Article2Tag.objects.filter(
-                    article_id=article_id).all().delete()
-                print(111)
-                print("data['tag_id_list']", data['tag_id_list'])
-                for x in data['tag_id_list']:
-                    print(x)
-                    article2tag_obj_list = Article2Tag.objects.add(
-                        article_id=article_id, tag_id=x)
-                # print('article_obj', article_obj)
-                return HttpResponse(json.dumps(data))
+                # print('tag_list', tag_list)
+                # print('cates', cates)
+                # print('article_obj.tag', article_obj.tag.name)
+                return render(request, 'article_edit.html', locals())
+            elif request.method == 'POST':  # 接收修改article请求 /article/id/
+                print('0 post')
+                if request.is_ajax():
+                    data = json.loads(request.body.decode('utf-8'))
+
+                    # 使用BeautifulSoup对富文本语言进行过滤处理
+                    soup = BeautifulSoup(data['content'], 'html.parser')
+                    for tag in soup.find_all():
+                        if tag.name in ['script', ]:
+                            tag.decompose()  # 如果是需要过滤的标签 进行销毁
+
+                    article_obj = Article.objects.create(
+                        title=data['title'],
+                        content=str(soup),
+                        date=datetime.datetime.now(),
+                        comment_count=0,
+                        up_count=0,
+                        down_count=0,
+                        blog_id=1,
+                        category_id=1,
+                        user_id=6,
+                    )
+
+                    # ----------------cate & tag 修改请求因前端无法选择selected而无法处理
+                    # cate=data['cate'],)
+                    # article2tag_obj_list = Article2Tag.objects.filter(
+                    #     article_id=article_id).all().delete()
+                    # for x in data['tag_id_list']:
+                    #     print(x)
+                    #     article2tag_obj_list = Article2Tag.objects.add(
+                    #         article_id=article_id, tag_id=x)
+                    # print('article_obj', article_obj)
+
+                    return HttpResponse(json.dumps(data))
+        else:
+            if request.method == 'GET':  # 初次请求 /article/id/
+                print('get')
+                article_obj = Article.objects.filter(id=article_id).first()
+                user_obj = UserInfo.objects.filter(id=request.user.id).first()
+                cates = Category.objects.all()
+                tags = Tag.objects.all()
+                tag_list = Article2Tag.objects.filter(
+                    article_id=article_obj.id).values('tag')
+                tag_list = [i['tag'] for i in tag_list]
+                # if tag:
+                #     tag = Tag.objects.filter(id=tag.tag_id).first()
+
+                print('tag_list', tag_list)
+                print('cates', cates)
+                print('article_obj.tag', article_obj.tag.name)
+                return render(request, 'article_edit.html', locals())
+            elif request.method == 'POST':  # 接收修改article请求 /article/id/
+                print('post1')
+                if request.is_ajax():
+                    data = json.loads(request.body.decode('utf-8'))
+                    # print('data', data)
+
+                    # 使用BeautifulSoup对富文本语言进行过滤处理
+                    soup = BeautifulSoup(data['content'], 'html.parser')
+
+                    article_obj = Article.objects.filter(id=article_id).update(
+                        title=data['title'], content=str(soup))
+
+                    # ----------------cate & tag 修改请求因前端无法选择selected而无法处理
+                    # cate=data['cate'],)
+                    # article2tag_obj_list = Article2Tag.objects.filter(
+                    #     article_id=article_id).all().delete()
+                    # for x in data['tag_id_list']:
+                    #     print(x)
+                    #     article2tag_obj_list = Article2Tag.objects.add(
+                    #         article_id=article_id, tag_id=x)
+                    # print('article_obj', article_obj)
+
+                    return HttpResponse(json.dumps(data))
 
     else:
         if request.method == 'GET':  # 初次请求 /dashboard/

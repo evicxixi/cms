@@ -27,7 +27,7 @@
                     <div class="form-row">
                         <div class="form-group col-6">
                             <label for="inputState">Choose Category</label>
-                            <select id="inputState" class="form-control cate selectpicker">
+                            <select id="inputState" class="form-control cate">
                                 {% for i in cates %}
                                 {% if i.name == article_obj.category.name %}
                                 <option value={{i.id}} selected>{{i.name}}</option>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="form-group col-6">
                             <label for="inputState">Choose Tags</label>
-                            <select id="inputState" name="selValue" class="form-control tag selectpicker" multiple>
+                            <select id="inputState" name="selValue" class="form-control tag" multiple>
                                 {% for i in tags %}
                                 {% if i.id in tag_list %}
                                 <option value={{i.id}} selected>{{i.name}}</option>
@@ -50,12 +50,6 @@
                             </select>
                         </div>
                     </div>
-                    <select class="selectpicker" multiple>
-  <option>Mustard</option>
-  <option>Ketchup</option>
-  <option>Relish</option>
-</select>
-
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm submit" role="button" aria-pressed="true">submit</a>
                 </div> <!-- article -->
             </div>
@@ -72,21 +66,12 @@
 {{ block.super }}
 <script type="text/javascript">
     var E = window.wangEditor
-        var editor = new E('.content')
-        // 或者 var editor = new E( document.getElementById('editor') )
-        editor.create()
+    var editor = new E('.content')
+    editor.customConfig.uploadImgServer = '/upload'
+    editor.customConfig.uploadFileName = 'FileImg'
+    editor.create()
 
     $(function () {
-        // $('.selectpicker').selectpicker();
-        // $("#inputState").selectpicker('val', '249');
-        // $("#setval").click(function(){
-        //   $("#inputState").selectpicker('val', 2)
-        // });
-        // $('select[name=selValue]').val(1);
-        // $('.selectpicker').selectpicker('val', [1])
-        
-        $('.selectpicker').selectpicker('val', 'Mustard');
-
         $('.submit').click(function () {
             // var title = $('.title').val()
             // console.log(title)
@@ -112,6 +97,7 @@
             // console.log('data',JSON.stringify(data))
             $.ajax({
                 url:'/dashboard/article/{{article_obj.pk}}/',
+                // url:'/dashboard/article/{{0}}/',
                 type:'POST',
                 contentType:"application/json; charset=utf-8",
                 dataType:'json',
@@ -120,7 +106,7 @@
                 success:function (data) {
                     // console.log('data',data)
                     data = JSON.parse(JSON.stringify(data))
-                    // console.log('data',data)
+                    console.log('data',data)
                     
                 }
             })
