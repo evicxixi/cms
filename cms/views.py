@@ -12,7 +12,7 @@ import datetime
 # Create your views here.
 
 
-def upload(request):
+def upload(request):  # 富文本编辑器上传图片API
     if request.method == 'GET':  #
         print('get')
     elif request.method == 'POST':  #
@@ -260,7 +260,7 @@ def login(request):
                     auth.login(request, user)
                     # print('user.is_authenticated()', user.is_authenticated())
                     # print('request.user', request.user)
-                    url = reverse(cms) + user.username
+                    url = '/' + user.username
                     print('url', url)
                     data = json.dumps({
                         'state': True,
