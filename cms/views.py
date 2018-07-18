@@ -9,6 +9,8 @@ from django.db.models import Avg, Max, Min, Count
 from django.http import JsonResponse
 from bs4 import BeautifulSoup
 import datetime
+from utils.code import check_code
+from io import BytesIO
 # Create your views here.
 
 
@@ -244,61 +246,74 @@ def cms(request, **kwargs):
             return render(request, 'cms.html', locals())
 
 
-def login(request):
-    if request.method == 'POST':
-        if request.is_ajax():
-            print('is_ajax')
-            data = json.loads(request.body.decode('utf-8'))
-            print(data, type(data))
-            if data['type'] == 'login':
-                user = auth.authenticate(
-                    username=data['username'],
-                    password=data['password'],
-                )
-                if user:
-                    # print('user.is_authenticated()', user.is_authenticated())
-                    auth.login(request, user)
-                    # print('user.is_authenticated()', user.is_authenticated())
-                    # print('request.user', request.user)
-                    url = '/' + user.username
-                    print('url', url)
-                    data = json.dumps({
-                        'state': True,
-                        'url': url,
-                    })
-                    return HttpResponse(data)
-                else:
-                    print('else user')
-                    data = json.dumps({
-                        'state': False,
-                        'url': reverse(cms),
-                    })
-                    return HttpResponse(data)
-            elif data['type'] == 'signin':
-                user_obj = UserInfo.objects.create_user(
-                    username=data['username'],
-                    password=data['password'],
-                    first_name=data['first_name'],
-                    last_name=data['last_name'],
-                    email=data['email'],
-                )
-                data = json.dumps({
-                    'state': True,
-                    'url': reverse(login),
-                })
-                return HttpResponse(data)
+def code(request):
+    """
+    生成图片验证码
+    :param request:
+    :return:
+    """
+    img, random_code = check_code()
+    request.session['random_code'] = random_code  # 将验证码写入session 在post时进行验证
+    stream = BytesIO()
+    img.save(stream, 'png')
+    return HttpResponse(stream.getvalue())
 
-    form_obj = UserForm()
-    data = {
-        'form_obj': form_obj,
-        'login_fields': ['username', 'password'],
-    }
-    return render(request, 'auth.html', locals())
+
+def login(request):
+    if request.method == 'GET':
+        data = {  # 生成form_obj并给出限制生成的字段
+            'form_obj': UserForm(),
+            'login_fields': ['username', 'password'],
+        }
+        return render(request, 'login.html', locals())
+    if request.is_ajax():  # if request.method == 'POST':
+        print('is_ajax')
+        data = json.loads(request.body.decode('utf-8'))
+        print('data', data)
+        # 如果验证码不正确
+        if data.get('random_code').upper() != request.session['random_code'].upper():
+            data = {
+                'state': -1,
+                'url': reverse(login),
+            }
+            # return HttpResponse(json.dumps(data))
+            return JsonResponse(data)
+
+        if data['type'] == 'login':  # 如果是login模式
+            user = auth.authenticate(
+                username=data['username'],
+                password=data['password'],
+            )
+            if not user:  # 如果username 或 password 错误
+                data = {
+                    'state': 0,
+                    'url': reverse(login),
+                }
+            else:  # 如果成功登录
+                auth.login(request, user)
+                data = {
+                    'state': 1,
+                    'url': user.username,
+                }
+            return JsonResponse(data)
+        elif data['type'] == 'signin':  # 如果是signin模式
+            user_obj = UserInfo.objects.create_user(
+                username=data['username'],
+                password=data['password'],
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                email=data['email'],
+            )
+            data = {
+                'state': True,
+                'url': reverse(login),
+            }
+            return JsonResponse(data)
 
 
 def logout(request):
     auth.logout(request)
-    return redirect(reverse('login'))
+    return redirect(reverse(login))
 
 
 def index(request):

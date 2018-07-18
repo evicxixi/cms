@@ -37,11 +37,15 @@
                 {% endfor %}
                     <div class="form-group row">
                       <div class="col-6">
-                        <input type="text" name="username" class="form-control form-control-sm" placeholder="验证码" maxlength="150" required="" id="id_username">
+                        <input type="text" name="random_code" class="form-control form-control-sm" placeholder="验证码" maxlength="150" required="" id="random_code">
                         <small class="form-text"></small>
                       </div>
                       <div class="col-6">
-                        <img src="">
+                        <!-- <img src={{imgurl}}> -->
+                        <img onclick="changeImg(this);" src='/code/' name="random_code">
+
+                        <!-- <img onclick="changeImg(this);" src="/code/" alt="" title="点击更换"> -->
+
                       </div>
                     </div>
                 <a id="login_btn" href="javascript:void(0);" class="btn btn-success"><i class="fas fa-sign-in-alt"></i> Login</a>
@@ -71,10 +75,19 @@
 {% block js %}
     {{ block.super }}
     <script type="text/javascript">
+        // 点击更换验证码图片
+        function changeImg(ths) {
+            ths.src = ths.src + '?';
+        }
+
+
+
         $(function () {
+
             $('body').css('background-color','#333');
+
+            // 切换login&signin标签
             $('#signin_tag').click(function () {
-                console.log(this);
                 $(this).addClass('active');
                 $('#login_tag').removeClass('active');
                 $('#signin_card').css('display','block');
@@ -87,18 +100,21 @@
                 $('#login_card').css('display','block');
             })
 
+            // 登录动作
             $('#login_btn').click(function () {
                 var data={
                     'type':'login',
                     'username': $('#login_card [name="username"]').val(),
                     'password': $('#login_card [name="password"]').val(),
+                    'random_code': $('#login_card [name="random_code"]').val(),
+
                     // 'username': 'evicxixi',
                     // 'password': 'evic37738925',
                     // 'username': 'nut',
                     // 'password': '123',
                 };
                 $.ajax({
-                    url:'/auth/',
+                    url:'/login/',
                     type:'POST',
                     content:'application/json; charset=utf-8',
                     dataType:'json',
@@ -106,16 +122,21 @@
                     success:function (data) {
                         var data=JSON.parse(JSON.stringify(data));
                         console.log('data',typeof(data),data)
-                        if (data['state']) {
-                            window.location.href=data['url'];
+                        if (data['state'] == '-1') {
+                            alert('验证码不正确');
+                            $("img[name='random_code']")[0].click(changeImg(this)); // reload random
+                        }
+                        else if (data['state'] == '0') {
+                            alert('用户名密码不正确');
                         }
                         else{
-                            alert('用户名密码不正确');
+                            window.location.href=data['url'];
                         }
                     }
                 })
             })
 
+            // 注册动作
             $('#signin_btn').click(function () {
                 var data={
                     'type':'signin',
@@ -125,6 +146,7 @@
                     'first_name': $('#signin_card [name="first_name"]').val(),
                     'last_name': $('#signin_card [name="last_name"]').val(),
                     'email': $('#signin_card [name="email"]').val(),
+                    
                     // 'username': 'cat',
                     // 'password': '123',
                     // 're_password': '123',
@@ -133,7 +155,7 @@
                     // 'email': 'cat@nut.com',
                 };
                 $.ajax({
-                    url:'/auth/',
+                    url:'/login/',
                     type:'POST',
                     content:'application/json; charset=utf-8',
                     dataType:'json',
