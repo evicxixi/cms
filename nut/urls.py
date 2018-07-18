@@ -21,8 +21,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', views.index, name='index'),
     re_path('^$', views.cms),
-    path('auth/', views.login, name='login'),
+    path('login/', views.login, name='login'),
+    path('code/', views.code, name='code'),
     path('logout/', views.logout, name='logout'),
+    path('upload/', views.upload, name='upload'),
     path('comment/', views.comment, name='comment'),
     path('article_up_down/', views.article_up_down, name='article_up_down'),
 
